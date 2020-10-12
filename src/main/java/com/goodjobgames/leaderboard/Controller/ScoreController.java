@@ -4,6 +4,7 @@ import com.goodjobgames.leaderboard.DTO.Request.ScoreRequestDTO;
 import com.goodjobgames.leaderboard.Service.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +17,8 @@ public class ScoreController {
     ScoreService scoreService;
 
     @RequestMapping(path="/submit", method = RequestMethod.POST)
-    public ResponseEntity<?> scoreSubmission(ScoreRequestDTO scoreRequestDTO){
+    public ResponseEntity<?> scoreSubmission(@RequestBody ScoreRequestDTO scoreRequestDTO){
         scoreService.saveNewScore(scoreRequestDTO);
+        return null;
     }
 }
