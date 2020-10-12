@@ -9,7 +9,5 @@ public class ScoreRequestDTO {
 
     private Float score_worth;
 
-    private String user_id;
-
-    private Long timestamp;
+    private String display_name;
 }

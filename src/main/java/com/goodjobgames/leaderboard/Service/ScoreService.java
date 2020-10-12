@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,15 +22,15 @@ public class ScoreService {
 
     public void saveNewScore(ScoreRequestDTO scoreRequestDTO) {
 
-        if(scoreRequestDTO.getUser_id() == null){
+        if(scoreRequestDTO.getDisplay_name() == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    ServerErrorMessages.USER_ID_MISSING.getErrorMessage());
+                    ServerErrorMessages.USERNAME_MISSING.getErrorMessage());
         }
 
-        Optional<User> user = userRepository.findById(UUID.fromString(scoreRequestDTO.getUser_id()));
+        Optional<User> user = userRepository.findByName(scoreRequestDTO.getDisplay_name());
         if(!user.isPresent()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    ServerErrorMessages.WRONG_USER_ID.getErrorMessage());
+                    ServerErrorMessages.WRONG_USERNAME.getErrorMessage());
         }
 
         if(scoreRequestDTO.getScore_worth() == null){
@@ -37,9 +38,7 @@ public class ScoreService {
                     ServerErrorMessages.SCORE_MISSING.getErrorMessage());
         }
 
-        if(scoreRequestDTO.getTimestamp() != null){
-            user.get().setTimestamp(scoreRequestDTO.getTimestamp());
-        }
+        user.get().setTimestamp(System.currentTimeMillis());
 
         try{
             user.get().setPoints(user.get().getPoints() + scoreRequestDTO.getScore_worth());

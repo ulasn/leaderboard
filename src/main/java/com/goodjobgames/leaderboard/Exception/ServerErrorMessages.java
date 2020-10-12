@@ -4,9 +4,9 @@ public enum ServerErrorMessages {
 
     USERNAME_MISSING("No username was given"),
     INTERNAL_SERVER_ERROR("Internal Server Error"),
-    WRONG_USER_ID("No user was found with given id"),
+    WRONG_USERNAME("No user was found with given username"),
     SCORE_MISSING("Score field is missing"),
-    USER_ID_MISSING("User_id field is missing");
+    USER_EXISTS("User exists with given username");
 
     private final String errorMessage;
 

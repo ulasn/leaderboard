@@ -3,6 +3,7 @@ package com.goodjobgames.leaderboard.Entity;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -11,8 +12,9 @@ import java.util.UUID;
 @Getter @Setter
 public class User implements Serializable {
 
-    private UUID id;
+    private UUID id = UUID.randomUUID();
 
+    @Indexed
     private String name;
 
     private float points;

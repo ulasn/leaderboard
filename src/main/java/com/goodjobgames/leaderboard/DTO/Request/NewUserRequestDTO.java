@@ -7,13 +7,7 @@ import lombok.Setter;
 @Getter @Setter
 public class NewUserRequestDTO {
 
-    private String user_id;
-
     private String display_name;
-
-    private Float points;
-
-    private Integer rank;
 
     private String country_code;
 }

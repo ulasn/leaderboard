@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -29,30 +30,20 @@ public class UserService {
                     ServerErrorMessages.USERNAME_MISSING.getErrorMessage());
         }
 
+        Optional<User> checkUser = userRepository.findByName(newUserRequestDTO.getDisplay_name());
+        if(checkUser.isPresent()){
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    ServerErrorMessages.USER_EXISTS.getErrorMessage());
+        }
+
         try{
             User user = new User(newUserRequestDTO.getDisplay_name());
-            if(newUserRequestDTO.getUser_id() != null){
-                user.setId(UUID.fromString(newUserRequestDTO.getUser_id()));
-            }
-            else{
-                user.setId(UUID.randomUUID());
-            }
-
-            if(newUserRequestDTO.getPoints() != null){
-                user.setPoints(newUserRequestDTO.getPoints());
-            }
-
-            if(newUserRequestDTO.getRank() != null){
-                user.setRank(newUserRequestDTO.getRank());
-            }
-
             if(newUserRequestDTO.getCountry_code() != null){
                 user.setCountry(newUserRequestDTO.getCountry_code());
             }
 
             userRepository.save(user);
         }
-
         catch(Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     ServerErrorMessages.INTERNAL_SERVER_ERROR.getErrorMessage());
