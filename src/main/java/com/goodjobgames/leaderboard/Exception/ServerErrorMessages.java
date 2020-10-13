@@ -6,7 +6,8 @@ public enum ServerErrorMessages {
     INTERNAL_SERVER_ERROR("Internal Server Error"),
     WRONG_USERNAME("No user was found with given username"),
     SCORE_MISSING("Score field is missing"),
-    USER_EXISTS("User exists with given username");
+    USER_EXISTS("User exists with given username"),
+    WRONG_GUID("No user exists with given guid");
 
     private final String errorMessage;
 

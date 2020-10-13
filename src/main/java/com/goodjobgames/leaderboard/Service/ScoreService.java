@@ -1,6 +1,7 @@
 package com.goodjobgames.leaderboard.Service;
 
 import com.goodjobgames.leaderboard.DTO.Request.ScoreRequestDTO;
+import com.goodjobgames.leaderboard.DTO.Response.ScoreResponseDTO;
 import com.goodjobgames.leaderboard.Entity.User;
 import com.goodjobgames.leaderboard.Exception.ServerErrorMessages;
 import com.goodjobgames.leaderboard.Repository.UserRepository;
@@ -20,7 +21,7 @@ public class ScoreService {
     @Autowired
     private UserRepository userRepository;
 
-    public void saveNewScore(ScoreRequestDTO scoreRequestDTO) {
+    public ScoreResponseDTO saveNewScore(ScoreRequestDTO scoreRequestDTO) {
 
         if(scoreRequestDTO.getDisplay_name() == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -43,6 +44,9 @@ public class ScoreService {
         try{
             user.get().setPoints(user.get().getPoints() + scoreRequestDTO.getScore_worth());
             userRepository.save(user.get());
+            return new ScoreResponseDTO(scoreRequestDTO.getScore_worth(),
+                    user.get().getId().toString(),
+                    user.get().getTimestamp());
         }
         catch (Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,

@@ -2,6 +2,7 @@ package com.goodjobgames.leaderboard.Controller;
 
 
 import com.goodjobgames.leaderboard.DTO.Request.NewUserRequestDTO;
+import com.goodjobgames.leaderboard.DTO.Response.UserResponseDTO;
 import com.goodjobgames.leaderboard.DTO.UserListDTO;
 import com.goodjobgames.leaderboard.Service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,14 +18,16 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(path= "/create", method = RequestMethod.POST)
-    public void createNewUser(@RequestBody NewUserRequestDTO newUserRequestDTO){
-        userService.createNewUser(newUserRequestDTO);
+    @ResponseBody
+    public UserResponseDTO createNewUser(@RequestBody NewUserRequestDTO newUserRequestDTO){
+        return userService.createNewUser(newUserRequestDTO);
     }
 
 
     @RequestMapping(path = "/profile/{user_guid}", method = RequestMethod.GET)
-    public void getProfileInfo(@PathVariable Long guid){
-        userService.getProfileInfo(guid);
+    @ResponseBody
+    public UserResponseDTO getProfileInfo(@PathVariable String user_guid){
+        return userService.getProfileInfo(user_guid);
     }
 
 

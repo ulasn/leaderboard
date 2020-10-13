@@ -1,6 +1,7 @@
 package com.goodjobgames.leaderboard.Service;
 
 import com.goodjobgames.leaderboard.DTO.Request.NewUserRequestDTO;
+import com.goodjobgames.leaderboard.DTO.Response.UserResponseDTO;
 import com.goodjobgames.leaderboard.DTO.UserDTO;
 import com.goodjobgames.leaderboard.DTO.UserListDTO;
 import com.goodjobgames.leaderboard.Entity.User;
@@ -11,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,7 +22,7 @@ public class UserService {
     UserRepository userRepository;
 
 
-    public void createNewUser(NewUserRequestDTO newUserRequestDTO) {
+    public UserResponseDTO createNewUser(NewUserRequestDTO newUserRequestDTO) {
 
         if(newUserRequestDTO.getDisplay_name() == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -43,6 +42,10 @@ public class UserService {
             }
 
             userRepository.save(user);
+            return new UserResponseDTO(user.getId().toString(),
+                    user.getName(),
+                    user.getPoints(),
+                    user.getRank());
         }
         catch(Exception e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
@@ -51,7 +54,16 @@ public class UserService {
     }
 
 
-    public void getProfileInfo(Long guid) {
+    public UserResponseDTO getProfileInfo(String guid) {
+        Optional<User> user = userRepository.findById(UUID.fromString(guid));
+        if(!user.isPresent()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    ServerErrorMessages.WRONG_GUID.getErrorMessage());
+        }
+        return new UserResponseDTO(user.get().getId().toString(),
+                user.get().getName(),
+                user.get().getPoints(),
+                user.get().getRank());
     }
 
 
