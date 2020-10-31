@@ -5,8 +5,10 @@ import com.goodjobgames.leaderboard.DTO.Response.ScoreResponseDTO;
 import com.goodjobgames.leaderboard.Entity.User;
 import com.goodjobgames.leaderboard.Exception.ServerErrorMessages;
 import com.goodjobgames.leaderboard.Repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.Server;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.support.collections.DefaultRedisZSet;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,11 +17,15 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class ScoreService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private DefaultRedisZSet redisZSet;
 
     public ScoreResponseDTO saveNewScore(ScoreRequestDTO scoreRequestDTO) {
 
@@ -44,8 +50,10 @@ public class ScoreService {
         try{
             user.get().setPoints(user.get().getPoints() + scoreRequestDTO.getScore_worth());
             userRepository.save(user.get());
+            redisZSet.add(user.get().getId(), user.get().getPoints());
+
             return new ScoreResponseDTO(scoreRequestDTO.getScore_worth(),
-                    user.get().getId().toString(),
+                    user.get().getId(),
                     user.get().getTimestamp());
         }
         catch (Exception e){
