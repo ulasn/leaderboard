@@ -53,6 +53,10 @@ public class UserService {
                 user.setCountry(newUserRequestDTO.getCountry_code());
             }
 
+            if(newUserRequestDTO.getPoints() != null){
+                user.setPoints(newUserRequestDTO.getPoints().floatValue());
+            }
+
             redisZSet.add(user.getId(), user.getPoints());
             userRepository.save(user);
             Integer rank = redisZSet.reverseRank(user.getId()).intValue() + 1;

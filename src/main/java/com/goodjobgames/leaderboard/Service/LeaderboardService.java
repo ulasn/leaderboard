@@ -103,7 +103,7 @@ public class LeaderboardService {
         log.info("Leaderboard page request - page number: {}", pageNumber);
 
         Integer sizeOfTable = redisZSet.size();
-        Integer noOfPages = (int) Math.ceil(sizeOfTable / 100);
+        double noOfPages = Math.ceil((float)(sizeOfTable / 100));
         if(pageNumber < 1){
             log.error("Leaderboard page request - Page number cannot be less than 1");
             throw new ResponseStatusException(HttpStatus.CONFLICT,
@@ -113,7 +113,7 @@ public class LeaderboardService {
         if(pageNumber > noOfPages){
             log.error("Leaderboard page request - Page number cannot be bigger than number of pages");
             throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    ServerErrorMessages.NO_OF_PAGES_WRONG.getErrorMessage() + noOfPages.toString());
+                    ServerErrorMessages.NO_OF_PAGES_WRONG.getErrorMessage() + noOfPages);
         }
 
         long start = (pageNumber.longValue() - 1) * 100 ;
