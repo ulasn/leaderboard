@@ -22,7 +22,7 @@ public class RedisConfig {
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(
-                "localhost",
+                "deneme-gjg-001.wy9vtj.0001.euc1.cache.amazonaws.com",
                      6379
         );
 //        redisStandaloneConfiguration.setDatabase(0);
