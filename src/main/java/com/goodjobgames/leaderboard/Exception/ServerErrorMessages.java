@@ -12,7 +12,9 @@ public enum ServerErrorMessages {
     BAD_PAGE_REQUEST("Both fields must be present"),
     BAD_PAGE_REQUEST_CONSTRAINTS("Start field must be bigger than 0 and End field must be in range of leaderboard size which is: "),
     NO_OF_PAGES_WRONG("Page number overflow, page number cannot be bigger than(according to leaderboard size): "),
-    PAGE_NUMBER_NEGATIVE("Page number must be bigger than 0");
+    NO_OF_PAGES_WRONG_COUNTRY("Page number overflow, page number cannot be bigger than(according to country leaderboard size): "),
+    PAGE_NUMBER_NEGATIVE("Page number must be bigger than 0"),
+    WRONG_START_END_PARAMETERS("Start must be less than end");
 
     private final String errorMessage;
 

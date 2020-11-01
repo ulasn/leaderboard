@@ -66,10 +66,15 @@ public class LeaderboardService {
                     ServerErrorMessages.BAD_PAGE_REQUEST.getErrorMessage());
         }
 
-        if(pageRequestDTO.getStart() < 1 || pageRequestDTO.getEnd() >= sizeOfTable){
+        if(pageRequestDTO.getStart() < 1 || pageRequestDTO.getEnd() > sizeOfTable){
             log.error("Global Ranking request error, start or end is invalid");
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     ServerErrorMessages.BAD_PAGE_REQUEST_CONSTRAINTS.getErrorMessage() + sizeOfTable.toString());
+        }
+
+        if(pageRequestDTO.getStart() >= pageRequestDTO.getEnd()){
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    ServerErrorMessages.WRONG_START_END_PARAMETERS.getErrorMessage());
         }
         log.info("Leaderboard page request - start of reverse range function");
         Iterator<String> ranks = redisZSet.reverseRange(pageRequestDTO.getStart().longValue() -1,
@@ -103,7 +108,7 @@ public class LeaderboardService {
         log.info("Leaderboard page request - page number: {}", pageNumber);
 
         Integer sizeOfTable = redisZSet.size();
-        double noOfPages = Math.ceil((float)(sizeOfTable / 100));
+        double noOfPages = Math.ceil((float) sizeOfTable / 100);
         if(pageNumber < 1){
             log.error("Leaderboard page request - Page number cannot be less than 1");
             throw new ResponseStatusException(HttpStatus.CONFLICT,
@@ -113,7 +118,7 @@ public class LeaderboardService {
         if(pageNumber > noOfPages){
             log.error("Leaderboard page request - Page number cannot be bigger than number of pages");
             throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    ServerErrorMessages.NO_OF_PAGES_WRONG.getErrorMessage() + noOfPages);
+                    ServerErrorMessages.NO_OF_PAGES_WRONG.getErrorMessage() + (int) noOfPages);
         }
 
         long start = (pageNumber.longValue() - 1) * 100 ;
@@ -164,10 +169,29 @@ public class LeaderboardService {
         log.info("Country Ranking request by page - service start");
         List<UserDTO> userList = new ArrayList<>();
         List<User> userListByCountry = userRepository.findByCountry(isoCode);
+
+        int pageSize = userListByCountry.size();
+        double noOfPages = Math.ceil((float) pageSize / 100);
+
+        if(pageNumber > noOfPages){
+            log.error("Leaderboard Country page request - Page number cannot be bigger than number of pages");
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    ServerErrorMessages.NO_OF_PAGES_WRONG_COUNTRY.getErrorMessage() + (int) noOfPages);
+        }
+
         Collections.sort(userListByCountry, Collections.reverseOrder());
         User user;
         int startingPosition = (pageNumber - 1) * 100;
         int endPosition = startingPosition + 100;
+        int listSize = userListByCountry.size();
+        if(listSize < 100){
+            endPosition = listSize;
+        }
+        else if(listSize < pageNumber * 100){
+            endPosition = listSize - ((pageNumber - 1) * 100);
+            endPosition += startingPosition;
+        }
+
         for(int i = startingPosition; i<endPosition; i++){
             user = userListByCountry.get(i);
             if(user.getPoints().intValue() != 0){

@@ -6,16 +6,13 @@ import com.goodjobgames.leaderboard.Entity.User;
 import com.goodjobgames.leaderboard.Exception.ServerErrorMessages;
 import com.goodjobgames.leaderboard.Repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.support.collections.DefaultRedisZSet;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -36,7 +33,7 @@ public class ScoreService {
 
         Optional<User> user = userRepository.findByName(scoreRequestDTO.getDisplay_name());
         if(!user.isPresent()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     ServerErrorMessages.WRONG_USERNAME.getErrorMessage());
         }
 

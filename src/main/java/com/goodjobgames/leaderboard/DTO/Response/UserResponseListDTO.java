@@ -1,7 +1,5 @@
 package com.goodjobgames.leaderboard.DTO.Response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.goodjobgames.leaderboard.DTO.UserDTO;
 import lombok.Getter;
 import lombok.Setter;
 

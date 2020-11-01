@@ -11,8 +11,6 @@ import com.goodjobgames.leaderboard.Exception.ServerErrorMessages;
 import com.goodjobgames.leaderboard.Repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.connection.RedisZSetCommands;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.support.collections.DefaultRedisZSet;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,8 +18,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -112,7 +108,7 @@ public class UserService {
         UserResponseListDTO userListDTO = new UserResponseListDTO();
         if(newUserRequestListDTO.getNumber_of_users() != null){
             if(!newUserRequestListDTO.getNumber_of_users().equals(newUserRequestListDTO.getNewUserList().size())){
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
                         ServerErrorMessages.NO_OF_USERS_WRONG.getErrorMessage());
             }
         }
